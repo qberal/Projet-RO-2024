@@ -1,0 +1,13 @@
+#graphe
+5s
+dep rr rmov rv rmar
+dep 2 rmar
+dep 5 rr
+dep 7 rmov
+dep 6 rv
+rr 5 rmar
+rr 2 rv
+rr 2 rmov
+rmov 7 rmar
+rmov 2 rv
+rmar 6 rv

@@ -31,7 +31,9 @@ public class mainRO {
 
         System.out.println(weightedGraph);
 
-        //pri
+        Graphe grapheTranforme = GrapheListe.deFichier("./data/graphe.txt");
+
+        System.out.println(IsomorphismEleve.isIsomorphic(weightedGraph, grapheTranforme));
 
 
     }
@@ -91,7 +93,7 @@ public class mainRO {
                 Sommet s2 = vertices.get(j);
                 int distance = dijkstra(originalGraph, s1).get(s2);
                 newGraph.ajouterArc(s1, s2, distance);
-                newGraph.ajouterArc(s2, s1, distance); // For symmetrical edges
+                //newGraph.ajouterArc(s2, s1, distance); // For symmetrical edges
             }
         }
 

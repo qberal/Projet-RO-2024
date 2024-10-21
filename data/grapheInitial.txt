@@ -1,27 +1,22 @@
-#graphe initial
+#grapheInitial
 19 s
 jaune_metro jaune_mauve 8_rue_mauve cyan_noir cyan_rouge rouge_metro 10_rue_rouge mauve_vert 22_rue_verte orange_rouge orange_noir noir_rose noir_vert vert_gris vert_metro vert_marron marron_bleu depot 3_rue_marron
-
 jaune_metro 1 jaune_mauve
-jaune_mauve 1 8_rue_mauve
-jaune_mauve 1 cyan_noir
-cyan_noir 1 cyan_rouge
-cyan_rouge 1 rouge_metro
-rouge_metro 1 10_rue_rouge
+jaune_mauve 2 8_rue_mauve cyan_noir
+cyan_noir 2 cyan_rouge orange_noir
+cyan_rouge 2 rouge_metro orange_rouge
+rouge_metro 2 10_rue_rouge jaune_metro
 10_rue_rouge 1 mauve_vert
 8_rue_mauve 1 mauve_vert
 mauve_vert 1 22_rue_verte
-cyan_rouge 1 orange_rouge
-cyan_noir 1 orange_noir
+22_rue_verte 0
 orange_rouge 1 orange_noir
-orange_noir 1 noir_rose
-noir_rose 1 noir_vert
+orange_noir 2 noir_rose noir_vert
+noir_rose 2 noir_vert vert_gris
 noir_vert 1 vert_gris
-noir_rose 1 vert_gris
+vert_gris 0
 vert_metro 1 noir_vert
 vert_marron 1 vert_metro
-marron_bleu 1 vert_marron
-marron_bleu 1 depot
-3_rue_marron 1 marro_bleu
-vert_metor 1 rouge_metro
-rouge_metro 1 jauve_metro
+marron_bleu 2 vert_marron depot
+depot 0
+3_rue_marron 1 marron_bleu

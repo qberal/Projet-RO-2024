@@ -8,7 +8,7 @@ package graphro;/*
  *
  * @author gdelmondo
  */
-public class main {
+public class mainRO {
 
     /**
      * @param args the command line arguments

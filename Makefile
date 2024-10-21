@@ -1,7 +1,7 @@
-compil: GraphROEleve.class
+compil: mainRO.class
 
-GraphROEleve.class:src/graphro/*java
-	javac --source-path ./src --class-path ./classes -d ./classes ./src/graphro/GraphROEleve.java
+mainRO.class:src/graphro/*java
+	javac --source-path ./src --class-path ./classes -d ./classes ./src/graphro/mainRO.java
 
-run: classes/graphro/GraphROEleve.class
-	java -classpath ./classes/ graphro.GraphROEleve
+run: classes/graphro/mainRO.class
+	java -classpath ./classes/ graphro.mainRO

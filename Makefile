@@ -1,6 +1,6 @@
 compil: main.jar
 
-mainRO.class:src/graphro/*java
+classes/graphro/mainRO.class:src/graphro/*java
 	javac --source-path ./src --class-path ./classes -d ./classes ./src/graphro/mainRO.java
 
 main.jar: classes/graphro/mainRO.class
@@ -8,3 +8,7 @@ main.jar: classes/graphro/mainRO.class
 
 run: main.jar
 	java -jar main.jar
+
+clean:
+	rm -rf classes/graphro/*.class
+	rm -f main.jar

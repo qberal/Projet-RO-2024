@@ -1,13 +1,8 @@
 #graphe
-5s
-dep rr rmov rv rmar
-dep 2 rmar
-dep 5 rr
-dep 7 rmov
-dep 6 rv
-rr 5 rmar
-rr 2 rv
-rr 2 rmov
-rmov 7 rmar
-rmov 2 rv
-rmar 6 rv
+5 sv
+depot 10_rue_rouge 8_rue_mauve 22_rue_verte 3_rue_marron
+depot 4 10_rue_rouge 5 8_rue_mauve 7 22_rue_verte 6 3_rue_marron 2
+10_rue_rouge 3 8_rue_mauve 2 22_rue_verte 2 3_rue_marron 5
+8_rue_mauve 2 22_rue_verte 2 3_rue_marron 7
+22_rue_verte 1 3_rue_marron 6
+3_rue_marron 0

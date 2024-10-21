@@ -17,7 +17,6 @@ public class mainRO {
     public static void main(String[] args) {
 
         Graphe grapheInitial = GrapheListe.deFichier("./data/grapheInitial.txt");
-        System.out.println(grapheInitial);
 
         List<Sommet> vertices = Arrays.asList(
                 new Sommet("8_rue_mauve", 0),
@@ -29,10 +28,9 @@ public class mainRO {
 
         Graphe weightedGraph = createWeightedGraph(grapheInitial, vertices);
 
-        System.out.println(weightedGraph);
+        Graphe grapheTranforme = GrapheListe.deFichier("./data/graphe.txt");
 
-        //pri
-
+        System.out.println(IsomorphismEleve.isIsomorphic(weightedGraph, grapheTranforme));
 
     }
 
@@ -91,7 +89,8 @@ public class mainRO {
                 Sommet s2 = vertices.get(j);
                 int distance = dijkstra(originalGraph, s1).get(s2);
                 newGraph.ajouterArc(s1, s2, distance);
-                newGraph.ajouterArc(s2, s1, distance); // For symmetrical edges
+                //newGraph.ajouterArc(s2, s1, distance); // For symmetrical edges
+                //TODO: Je sais pas si c'est nécessaire
             }
         }
 

@@ -32,10 +32,24 @@ public class mainRO {
         System.out.println(weightedGraph);
 
         Graphe grapheTranforme = GrapheListe.deFichier("./data/graphe.txt");
-
+        
         System.out.println(IsomorphismEleve.isIsomorphic(weightedGraph, grapheTranforme));
 
+        // For some reason there are negative values in the graph.
+        // Take care of those mfs.
+        for (Sommet s1 : weightedGraph.sommets()) {
+            for (Sommet s2 : weightedGraph.sommets()) {
+                int value = weightedGraph.valeurArc(s1, s2);
+                if (value < 0) {
+                    weightedGraph.enleverArc(s1, s2);
+                    weightedGraph.ajouterArc(s1, s2, -value);
+                }
+            }
+        }
 
+        ArrayList<Sommet> bestPath = findBestPath(weightedGraph);
+        int bestCost = calculateTourCost(bestPath, weightedGraph);
+        System.out.println("Best path: " + bestPath + " with cost " + bestCost);
     }
 
     public static Map<Sommet, Integer> dijkstra(Graphe g, Sommet startNode) {
@@ -100,5 +114,82 @@ public class mainRO {
         return newGraph;
     }
 
+    /// Fonction utilitaire pour calculer le coût du tour actuel
+    public static int calculateTourCost(ArrayList<Sommet> tour, Graphe g) {
+        int cost = 0;
+        for (int i = 0; i < tour.size() - 1; i++) {
+            System.out.println(tour.get(i) + " -> " + tour.get(i + 1) + " : " + g.valeurArc(tour.get(i), tour.get(i + 1)));
+            // abs(g.valeurArc(tour.get(i), tour.get(i + 1)))
+            cost += g.valeurArc(tour.get(i), tour.get(i + 1));
+        }
+        cost += g.valeurArc(tour.get(tour.size() - 1), tour.get(0));
+        return cost;
+    }
 
+    /// Fonction pour trouver une borne inférieure en utilisant une approximation, ici un simple MST
+    // public static int minimumRemainingCost(ArrayList<Sommet> tour, Graphe g) {
+    //     int minimumRemainingCost = calculateTourCost(tour, g);
+
+    //     for (Sommet s : g.sommets()) {
+    //         if (tour.contains(s)) {
+    //             continue;
+    //         }
+    //         int min = Integer.MAX_VALUE;
+    //         for (Sommet s2 : g.sommets()) {
+    //             if (tour.contains(s2) || s == s2) {
+    //                 continue;
+    //             }
+    //             min = Math.min(min, g.valeurArc(s, s2));
+    //         }
+    //         minimumRemainingCost += min;
+    //     }
+
+    //     return minimumRemainingCost;
+    // }
+
+    /// Algorithme de Branch-and-Bound
+    public static ArrayList<Sommet> findBestPath(ArrayList<Sommet> start, int bestCost, Graphe g) {
+        if (start.size() == g.sommets().size()) {
+            return start;
+        }
+
+        ArrayList<Sommet> bestTour = null;
+
+        for (Sommet s : g.sommets()) {
+            if (start.contains(s)) {
+                continue;
+            }
+
+            ArrayList<Sommet> newStart = new ArrayList<>(start);
+            newStart.add(s);
+
+            // int minimumRemainingCost = minimumRemainingCost(newStart, g);
+            // if (minimumRemainingCost >= bestCost) {
+            //     continue;
+            // }
+            
+            ArrayList<Sommet> newTour = findBestPath(newStart, bestCost, g);
+            if (newTour == null) {
+                continue;
+            }
+
+            int newCost = calculateTourCost(newTour, g);
+            if (newCost < bestCost) {
+                bestCost = newCost;
+                bestTour = newTour;
+            }
+        }
+
+        return bestTour;
+    }
+
+    public static ArrayList<Sommet> findBestPath(Graphe g) {
+        ArrayList<Sommet> start = new ArrayList<>();
+        start.add(new Sommet("depot", 0));
+
+        ArrayList<Sommet> bestTour = findBestPath(start, Integer.MAX_VALUE, g);
+        bestTour.add(new Sommet("depot", 0));
+
+        return bestTour;
+    }
 }

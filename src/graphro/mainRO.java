@@ -19,13 +19,20 @@ public class mainRO {
         Graphe grapheInitial = GrapheListe.deFichier("./data/grapheInitial.txt");
         System.out.println(grapheInitial);
 
-        Sommet startNode = grapheInitial.sommets().iterator().next();
+        List<Sommet> vertices = Arrays.asList(
+                new Sommet("8_rue_mauve", 0),
+                new Sommet("22_rue_verte", 0),
+                new Sommet("3_rue_marron", 0),
+                new Sommet("10_rue_rouge", 0),
+                new Sommet("depot", 0)
+        );
 
-        Map<Sommet, Integer> distances = dijkstra(grapheInitial, startNode);
+        Graphe weightedGraph = createWeightedGraph(grapheInitial, vertices);
 
-        for (Map.Entry<Sommet, Integer> entry : distances.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
-        }
+        System.out.println(weightedGraph);
+
+        //pri
+
 
     }
 
@@ -68,5 +75,28 @@ public class mainRO {
 
         return distances;
     }
+
+    public static Graphe createWeightedGraph(Graphe originalGraph, List<Sommet> vertices) {
+        Graphe newGraph = new GrapheListe(vertices.size());
+
+        // Add vertices to the new graph
+        for (Sommet vertex : vertices) {
+            newGraph.ajouterSommet(vertex);
+        }
+
+        // Add edges with distances to the new graph
+        for (int i = 0; i < vertices.size(); i++) {
+            for (int j = i + 1; j < vertices.size(); j++) {
+                Sommet s1 = vertices.get(i);
+                Sommet s2 = vertices.get(j);
+                int distance = dijkstra(originalGraph, s1).get(s2);
+                newGraph.ajouterArc(s1, s2, distance);
+                newGraph.ajouterArc(s2, s1, distance); // For symmetrical edges
+            }
+        }
+
+        return newGraph;
+    }
+
 
 }

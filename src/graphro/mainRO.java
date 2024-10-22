@@ -29,17 +29,19 @@ public class mainRO {
         //partie avec le metro
         //********************
 
+        System.out.println("**************");
         System.out.println("Avec le métro");
+        System.out.println("**************");
 
         Graphe grapheInitial = GrapheListe.deFichier("./data/grapheInitial.txt");
         trouverLeMeilleurParcours(grapheInitial, vertices);
 
-        //********************
-        //partie sans le metro
-        //********************
+        System.out.println("**************");
         System.out.println("Sans le métro");
+        System.out.println("**************");
 
         Graphe grapheSansMetro = GrapheListe.deFichier("./data/grapheInitialsansMetro.txt");
+
         trouverLeMeilleurParcours(grapheSansMetro, vertices);
 
     }
@@ -59,7 +61,6 @@ public class mainRO {
 
         System.out.println("Full path: " + fullPath + "\n");
     }
-
 
     public static Map<Sommet, Integer> dijkstra(Graphe g, Sommet startNode) {
         Map<Sommet, Integer> distances = new HashMap<>();

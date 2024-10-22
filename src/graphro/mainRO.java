@@ -16,9 +16,7 @@ public class mainRO {
      */
     public static void main(String[] args) {
 
-        Graphe grapheInitial = GrapheListe.deFichier("./data/grapheInitial.txt");
-        System.out.println(grapheInitial);
-
+        //Adresses par lesquelles on doit passer pour la tournee
         List<Sommet> vertices = Arrays.asList(
                 new Sommet("8_rue_mauve", 0),
                 new Sommet("22_rue_verte", 0),
@@ -27,34 +25,41 @@ public class mainRO {
                 new Sommet("depot", 0)
         );
 
-        Graphe weightedGraph = createWeightedGraph(grapheInitial, vertices);
+        //********************
+        //partie avec le metro
+        //********************
 
-        System.out.println(weightedGraph);
+        System.out.println("Avec le métro");
 
-        Graphe grapheTranforme = GrapheListe.deFichier("./data/graphe.txt");
-        
-        System.out.println(IsomorphismEleve.isIsomorphic(weightedGraph, grapheTranforme));
+        Graphe grapheInitial = GrapheListe.deFichier("./data/grapheInitial.txt");
+        trouverLeMeilleurParcours(grapheInitial, vertices);
 
-        // For some reason there are negative values in the graph.
-        // Take care of those mfs.
-        for (Sommet s1 : weightedGraph.sommets()) {
-            for (Sommet s2 : weightedGraph.sommets()) {
-                int value = weightedGraph.valeurArc(s1, s2);
-                if (value < 0) {
-                    weightedGraph.enleverArc(s1, s2);
-                    weightedGraph.ajouterArc(s1, s2, -value);
-                }
-            }
-        }
+        //********************
+        //partie sans le metro
+        //********************
+        System.out.println("Sans le métro");
+
+        Graphe grapheSansMetro = GrapheListe.deFichier("./data/grapheInitialsansMetro.txt");
+        trouverLeMeilleurParcours(grapheSansMetro, vertices);
+
+    }
+
+    public static void trouverLeMeilleurParcours(Graphe g, List<Sommet> vertices) {
+        Graphe weightedGraph = createWeightedGraph(g, vertices);
 
         long startTime = System.nanoTime();
         ArrayList<Sommet> bestPath = findBestPath(weightedGraph);
         long endTime = System.nanoTime();
 
         int bestCost = calculateTourCost(bestPath, weightedGraph);
-        
+
         System.out.println("Best path: " + bestPath + " with cost " + bestCost + " in " + (endTime - startTime) + "ns (time isn't accurate)");
+
+        List<Sommet> fullPath = reconstructPath(g, bestPath);
+
+        System.out.println("Full path: " + fullPath + "\n");
     }
+
 
     public static Map<Sommet, Integer> dijkstra(Graphe g, Sommet startNode) {
         Map<Sommet, Integer> distances = new HashMap<>();
@@ -111,7 +116,7 @@ public class mainRO {
                 Sommet s2 = vertices.get(j);
                 int distance = dijkstra(originalGraph, s1).get(s2);
                 newGraph.ajouterArc(s1, s2, distance);
-                //newGraph.ajouterArc(s2, s1, distance); // For symmetrical edges
+                newGraph.ajouterArc(s2, s1, distance); // For symmetrical edges
             }
         }
 
@@ -172,7 +177,7 @@ public class mainRO {
             if (minimumRemainingCost >= bestCost) {
                 continue;
             }
-            
+
             ArrayList<Sommet> newTour = findBestPath(newStart, bestCost, g);
             if (newTour == null) {
                 continue;
@@ -195,5 +200,77 @@ public class mainRO {
         ArrayList<Sommet> bestTour = findBestPath(start, Integer.MAX_VALUE, g);
 
         return bestTour;
+    }
+
+    public static List<Sommet> reconstructPath(Graphe originalGraph, List<Sommet> bestPath) {
+        List<Sommet> fullPath = new ArrayList<>();
+
+        for (int i = 0; i < bestPath.size() - 1; i++) {
+            Sommet start = bestPath.get(i);
+            Sommet end = bestPath.get(i + 1);
+            fullPath.addAll(findShortestPath(originalGraph, start, end));
+        }
+
+        //si i et i+1 c'est les mêmes sommets, on en enlève un
+        for (int i = 0; i < fullPath.size() - 1; i++) {
+            if (fullPath.get(i).equals(fullPath.get(i + 1))) {
+                fullPath.remove(i);
+            }
+        }
+
+        return fullPath;
+    }
+
+    private static List<Sommet> findShortestPath(Graphe g, Sommet start, Sommet end) {
+        Map<Sommet, Integer> distances = new HashMap<>();
+        Map<Sommet, Sommet> previous = new HashMap<>();
+        PriorityQueue<Sommet> pq = new PriorityQueue<>(Comparator.comparingInt(distances::get));
+        Set<Sommet> visited = new HashSet<>();
+
+        for (Sommet s : g.sommets()) {
+            distances.put(s, Integer.MAX_VALUE);
+        }
+        distances.put(start, 0);
+        pq.add(start);
+
+        while (!pq.isEmpty()) {
+            Sommet current = pq.poll();
+            if (!visited.add(current)) {
+                continue;
+            }
+
+            if (current.equals(end)) {
+                break;
+            }
+
+            for (Arc arc : ((GrapheListe) g).voisins(current)) {
+                Sommet neighbor = arc.destination();
+                int newDist = distances.get(current) + arc.valeur();
+                if (newDist < distances.get(neighbor)) {
+                    distances.put(neighbor, newDist);
+                    previous.put(neighbor, current);
+                    pq.add(neighbor);
+                }
+            }
+
+            // Check the reverse direction for undirected graph
+            for (Sommet neighbor : g.sommets()) {
+                if (g.existeArc(neighbor, current)) {
+                    int newDist = distances.get(current) + g.valeurArc(neighbor, current);
+                    if (newDist < distances.get(neighbor)) {
+                        distances.put(neighbor, newDist);
+                        previous.put(neighbor, current);
+                        pq.add(neighbor);
+                    }
+                }
+            }
+        }
+
+        List<Sommet> path = new LinkedList<>();
+        for (Sommet at = end; at != null; at = previous.get(at)) {
+            path.add(0, at);
+        }
+
+        return path;
     }
 }
